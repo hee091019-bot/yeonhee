@@ -1,1365 +1,357 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제약 연구원 & 화학 로드맵</title>
+    <style>
+        /* 기본 스타일 및 테마 정의 (제약/바이오 느낌의 블루&민트) */
+        :root {
+            --primary-color: #2a6fdb;
+            --secondary-color: #4ade80;
+            --bg-color: #f4f7fc;
+            --card-color: #ffffff;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+        }
 
-<title>CHEMIPATH</title>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
 
-<link rel="stylesheet" href="style.css">
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
+        /* 앱 컨테이너 (모바일 앱 화면 크기 감각) */
+        .app-container {
+            width: 100%;
+            max-width: 430px;
+            height: 844px; /* 아이폰 13/14 프로 표준 사이즈 기조 */
+            background-color: var(--bg-color);
+            box-shadow: 0 14px 28px rgba(0,0,0,0.05), 0 10px 10px rgba(0,0,0,0.05);
+            border-radius: 30px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 6px solid #1e293b;
+        }
+
+        /* 앱 상단 헤더 */
+        .app-header {
+            background-color: var(--card-color);
+            padding: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* 메인 콘텐츠 영역 (스크롤 가능) */
+        .app-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 90px; /* 하단 네비게이션 공간 확보 */
+        }
+
+        /* 스크롤바 숨기기 */
+        .app-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 화면(페이지) 전환 스타일 */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease-out-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 카드 UI 스타일 */
+        .card {
+            background: var(--card-color);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-light);
+        }
+
+        /* 배지 스타일 */
+        .badge {
+            display: inline-block;
+            background: #eff6ff;
+            color: var(--primary-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* 하단 탭 바 (앱 메뉴) */
+        .tab-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 70px;
+            background-color: var(--card-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .tab-item.active {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .tab-icon {
+            font-size: 1.4rem;
+            margin-bottom: 2px;
+        }
+
+        /* 성찰일지 폼 스타일 */
+        .form-group {
+            margin-bottom: 12px;
+        }
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+        button.btn-submit {
+            width: 100%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        
+        /* 저장된 일지 스타일 */
+        .log-item {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary-color);
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
-
-
 <body>
 
+    <div class="app-container">
+        <!-- 앱 헤더 -->
+        <div class="app-header" id="app-title">진로 탐색: 제약 연구원</div>
 
-<div class="phone">
-
-
-    <div class="island"></div>
-
-
-    <main class="app">
-
-
-        <!-- HOME -->
-
-        <section class="page home">
-
-            <div class="logo">
-                🧬
-            </div>
-
-
-            <h1>
-                CHEMIPATH
-            </h1>
-
-
-            <p class="subtitle">
-                Chemistry creates the path<br>
-                to medicine
-            </p>
-
-
-            <div class="main-card">
-
-                <h2>
-                    화학이 만드는<br>
-                    한 알의 기적
-                </h2>
-
-                <p>
-                    약물 속 화학 원리를 탐구하고<br>
-                    나만의 연구 길을 찾아가는 공간
-                </p>
-
-            </div>
-
-
-            <button class="enter" onclick="openPage(1)">
-                ENTER →
-            </button>
-
-
-        </section>
-
-
-
-
-        <!-- MENU -->
-
-
-        <section class="page menu-page">
-
-
-            <h2>
-                Explore
-            </h2>
-
-
-            <div class="cards">
-
-
-                <div class="card" onclick="openPage(2)">
-                    💊
-                    <h3>Medicine</h3>
-                    <p>약 속 화학</p>
+        <!-- 앱 콘텐츠 영역 -->
+        <div class="app-content">
+            
+            <!-- PAGE 1: 진로 소개 -->
+            <div id="page-home" class="page active">
+                <div class="card" style="background: linear-gradient(135deg, #2a6fdb, #1d4ed8); color: white;">
+                    <span class="badge" style="background: rgba(255,255,255,0.2); color: white;">Career</span>
+                    <h2 style="color: white; margin-top: 5px;">신약을 개척하는<br>제약 연구원</h2>
+                    <p style="color: #e2e8f0; font-size: 0.9rem; margin-top: 8px;">질병을 치료하고 인류의 건강을 지키기 위해 새로운 의약품을 연구, 개발하는 전문가입니다.</p>
+                </div>
+                
+                <div class="card">
+                    <h2>핵심 업무</h2>
+                    <p>• <b>후보 물질 발굴:</b> 질병을 유발하는 단백질을 억제할 화학 물질 탐색<br>
+                       • <b>합성 및 분석:</b> 유기화학적 공정을 통한 유효 물질 합성<br>
+                       • <b>효능 및 독성 평가:</b> 세포 및 동물 실험을 통한 안전성 검증</p>
                 </div>
 
+                <div class="card">
+                    <h2>필요 역량</h2>
+                    <p>유기화학, 분석화학, 생화학 분야의 깊은 지식이 필수적이며, 수많은 실험 실패 속에서도 원인을 분석해내는 <b>끈기와 분석적 사고</b>가 요구됩니다.</p>
+                </div>
+            </div>
 
-
-                <div class="card" onclick="openPage(3)">
-                    ⚗️
-                    <h3>Chemistry</h3>
-                    <p>교과 개념</p>
+            <!-- PAGE 2: 교과 연계 -->
+            <div id="page-chemistry" class="page">
+                <div class="card">
+                    <span class="badge">화학Ⅰ 연계</span>
+                    <h2>의약품과 화학의 첫걸음</h2>
+                    <p>• <b>탄소 화합물의 유용성:</b> 최초의 합성 의약품인 <b>아스피린</b>의 합성 과정을 통해 탄소 화합물이 인류 건강에 기여한 점을 이해합니다.<br>
+                       • <b>몰 질량과 용액의 농도:</b> 의약품 제조 시 정확한 정량 분석과 정밀한 농도 조절(M농도)이 왜 필수적인지 탐구합니다.</p>
                 </div>
 
+                <div class="card">
+                    <span class="badge">화학Ⅱ 연계</span>
+                    <h2>의약품 반응의 심화 이해</h2>
+                    <p>• <b>화학 평형과 상수의 활용:</b> 약물이 체내(혈액 등)에서 어떻게 완충 작용을 거쳐 흡수되는지, pH 수질 관리 및 체내 pH 유지 원리와 연계하여 분석합니다.<br>
+                       • <b>반응 속도와 촉매:</b> 효소 촉매의 작용 기전을 이해하고, 특정 효소의 활성을 억제하거나 촉진하는 약물 설계 원리를 배웁니다.</p>
+                </div>
+            </div>
 
-
-                <div class="card" onclick="openPage(4)">
-                    🔬
-                    <h3>Laboratory</h3>
-                    <p>실험 탐구</p>
+            <!-- PAGE 3: 세특 성찰일지 -->
+            <div id="page-log" class="page">
+                <div class="card">
+                    <h2>탐구 성찰일지 작성</h2>
+                    <p style="margin-bottom: 15px;">교과 활동 중 진로와 연계하여 느낀 점을 기록하세요. (세특 기초 자료 활용 가능)</p>
+                    
+                    <div class="form-group">
+                        <label>탐구 주제 / 관련 교과</label>
+                        <input type="text" id="log-topic" placeholder="예: 화학Ⅱ - 화학 평형과 약물 흡수 메커니즘">
+                    </div>
+                    <div class="form-group">
+                        <label>활동 및 성찰 내용</label>
+                        <textarea id="log-content" placeholder="실험이나 탐구를 통해 새롭게 알게 된 점과 제약 연구원으로서 느낀 점을 적어보세요."></textarea>
+                    </div>
+                    <button class="btn-submit" onclick="saveLog()">일지 저장하기</button>
                 </div>
 
-
-
-                <div class="card" onclick="openPage(5)">
-                    📓
-                    <h3>Journal</h3>
-                    <p>연구 기록</p>
+                <div class="card">
+                    <h2>나의 성찰 기록 기록장</h2>
+                    <div id="log-list">
+                        <p style="text-align: center; font-size: 0.85rem;">아직 작성된 일지가 없습니다.</p>
+                    </div>
                 </div>
-
-
-
-                <div class="card wide" onclick="openPage(6)">
-                    👩‍🔬
-                    <h3>Future</h3>
-                    <p>진로 로드맵</p>
-                </div>
-
-
-
             </div>
 
+        </div>
 
-        </section>,
-                <!-- MEDICINE -->
-
-        <section class="page">
-
-            <button class="back" onclick="openPage(1)">
-                ←
+        <!-- 하단 내비게이션 바 -->
+        <div class="tab-bar">
+            <button class="tab-item active" onclick="switchPage('home', '제약 연구원 소개', this)">
+                <span class="tab-icon">🔬</span>
+                <span>진로 소개</span>
             </button>
-
-            <h2>
-                💊 Medicine
-            </h2>
-
-            <div class="info-card">
-
-                <h3>Aspirin</h3>
-
-                <p>
-                    아세틸기와 카복실기를 포함한 의약품으로
-                    분자의 구조와 작용의 관계를 탐구한다.
-                </p>
-
-            </div>
-
-
-            <div class="info-card">
-
-                <h3>약물 전달 시스템</h3>
-
-                <p>
-                    약물이 원하는 위치까지 이동하도록
-                    화학적 성질을 조절하는 기술이다.
-                </p>
-
-            </div>
-
-
-            <div class="info-card">
-
-                <h3>구조와 효과</h3>
-
-                <p>
-                    작용기의 변화는 용해도와 흡수율에 영향을 준다.
-                </p>
-
-            </div>
-
-
-        </section>
-
-
-
-
-        <!-- CHEMISTRY -->
-
-
-        <section class="page">
-
-
-            <button class="back" onclick="openPage(1)">
-                ←
+            <button class="tab-item" onclick="switchPage('chemistry', '화학 교과 연계', this)">
+                <span class="tab-icon">🧪</span>
+                <span>교과 안내</span>
             </button>
-
-
-            <h2>
-                ⚗️ Chemistry
-            </h2>
-
-
-
-            <div class="info-card">
-
-                <h3>공유 결합</h3>
-
-                <p>
-                    원자가 전자를 공유하여 안정한 분자를 형성한다.
-                </p>
-
-            </div>
-
-
-
-            <div class="info-card">
-
-                <h3>분자의 극성</h3>
-
-                <p>
-                    분자의 구조와 극성은 물질의 성질을 결정한다.
-                </p>
-
-            </div>
-
-
-
-
-            <div class="info-card">
-
-                <h3>화학 반응</h3>
-
-                <p>
-                    새로운 물질 생성 과정에서 결합이 변화한다.
-                </p>
-
-            </div>
-
-
-        </section>
-
-
-
-
-
-        <!-- LAB -->
-
-
-        <section class="page">
-
-
-            <button class="back" onclick="openPage(1)">
-                ←
+            <button class="tab-item" onclick="switchPage('log', '세특 성찰일지', this)">
+                <span class="tab-icon">📝</span>
+                <span>성찰일지</span>
             </button>
-
-
-            <h2>
-                🔬 Laboratory
-            </h2>
-
-
-
-            <div class="experiment">
-
-                <h3>🧬 DNA 추출</h3>
-
-                <p>
-                    세포 속 유전 물질을 직접 관찰하는 실험
-                </p>
-
-            </div>
-
-
-
-            <div class="experiment">
-
-                <h3>🧪 pH 실험</h3>
-
-                <p>
-                    지시약을 이용해 산성과 염기성을 비교
-                </p>
-
-            </div>
-
-
-
-
-            <div class="experiment">
-
-                <h3>🍊 Vitamin C</h3>
-
-                <p>
-                    조건 변화에 따른 물질 변화를 탐구
-                </p>
-
-            </div>
-
-
-
-        </section>
-
-
-
-
-        <!-- JOURNAL -->
-
-
-        <section class="page">
-
-
-            <button class="back" onclick="openPage(1)">
-                ←
-            </button>
-
-
-            <h2>
-                📓 Journal
-            </h2>
-
-
-            <textarea placeholder="오늘의 연구 기록"></textarea>
-
-
-            <button class="save">
-                저장하기
-            </button>
-
-
-
-        </section>
-
-
-
-
-
-        <!-- FUTURE -->
-
-
-        <section class="page">
-
-
-            <button class="back" onclick="openPage(1)">
-                ←
-            </button>
-
-
-            <h2>
-                👩‍🔬 Future
-            </h2>
-
-
-
-            <div class="info-card">
-
-                <h3>
-                    Pharmacist Researcher
-                </h3>
-
-                <p>
-                    화학과 생명과학 지식을 바탕으로
-                    새로운 의약품을 연구하는 분야
-                </p>
-
-            </div>
-
-
-
-
-            <div class="info-card">
-
-                <h3>
-                    Required Skills
-                </h3>
-
-                <p>
-                    실험 설계 · 분석 능력 · 문제 해결력
-                </p>
-
-            </div>
-
-
-        </section>
-
-
-
+        </div>
     </div>
 
+    <!-- 페이지 전환 및 일지 저장 자바스크립트 -->
+    <script>
+        // 화면 전환 함수
+        function switchPage(pageId, title, element) {
+            // 모든 페이지 숨기기
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
 
-    <!-- bottom navigation -->
+            // 선택한 페이지 보여주기
+            document.getElementById('page-' + pageId).classList.add('active');
 
+            // 헤더 제목 변경
+            document.getElementById('app-title').innerText = title;
 
-    <nav>
+            // 탭 바 활성화 스타일 변경
+            const tabs = document.querySelectorAll('.tab-item');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            element.classList.add('active');
+            
+            // 페이지 상단으로 스크롤 리셋
+            document.querySelector('.app-content').scrollTop = 0;
+        }
 
-        <button onclick="openPage(0)">🏠</button>
-        <button onclick="openPage(2)">💊</button>
-        <button onclick="openPage(3)">⚗️</button>
-        <button onclick="openPage(4)">🔬</button>
-        <button onclick="openPage(5)">📓</button>
-        <button onclick="openPage(6)">👩‍🔬</button>
+        // 성찰일지 저장 함수
+        function saveLog() {
+            const topic = document.getElementById('log-topic').value;
+            const content = document.getElementById('log-content').value;
 
-    </nav>
+            if(!topic || !content) {
+                alert('주제와 내용을 모두 입력해주세요!');
+                return;
+            }
 
+            const logList = document.getElementById('log-list');
+            
+            // 첫 일지 작성 시 기존 안내 문구 삭제
+            if(logList.innerHTML.includes('아직 작성된 일지가 없습니다.')) {
+                logList.innerHTML = '';
+            }
 
+            // 새로운 일지 요소 생성
+            const newLog = document.createElement('div');
+            newLog.classList.add('log-item');
+            
+            // 현재 날짜 구하기
+            const today = new Date().toLocaleDateString();
 
-</main>
+            newLog.innerHTML = `
+                <strong style="color:#2a6fdb;">${topic}</strong> <span style="font-size:0.75rem; color:#94a3b8;">(${today})</span>
+                <p style="margin-top:5px; color:#334155; font-size:0.85rem;">${content.replace(/\n/g, '<br>')}</p>
+            `;
 
+            // 목록의 맨 위에 추가
+            logList.insertBefore(newLog, logList.firstChild);
 
-<script src="script.js"></script>
+            // 입력란 비우기
+            document.getElementById('log-topic').value = '';
+            document.getElementById('log-content').value = '';
 
-
+            alert('성찰일지가 기록장에 추가되었습니다!');
+        }
+    </script>
 </body>
-
 </html>
-/* =========================
-   CHEMIPATH STYLE
-========================= */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Pretendard', Arial, sans-serif;
-}
-
-
-body{
-
-    height:100vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    background:linear-gradient(
-        135deg,
-        #8de5d4,
-        #9ed8ff
-    );
-
-}
-
-
-
-.phone{
-
-    width:390px;
-
-    height:844px;
-
-    background:#f7ffff;
-
-    border-radius:45px;
-
-    overflow:hidden;
-
-    position:relative;
-
-    box-shadow:
-    0 25px 60px rgba(0,0,0,0.25);
-
-}
-
-
-
-.island{
-
-    width:120px;
-
-    height:32px;
-
-    background:#111;
-
-    border-radius:20px;
-
-    position:absolute;
-
-    top:14px;
-
-    left:50%;
-
-    transform:translateX(-50%);
-
-    z-index:10;
-
-}
-
-
-
-
-.app{
-
-    width:100%;
-
-    height:100%;
-
-    display:flex;
-
-    transition:0.5s ease;
-
-}
-
-
-
-
-.page{
-
-    min-width:100%;
-
-    height:100%;
-
-    padding:70px 25px 100px;
-
-    overflow-y:auto;
-
-    background:
-
-    linear-gradient(
-        180deg,
-        #efffff,
-        #f7fbff
-    );
-
-}
-
-
-
-
-.home{
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    text-align:center;
-
-}
-
-
-
-
-.logo{
-
-    width:100px;
-
-    height:100px;
-
-    margin-top:50px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    font-size:55px;
-
-    border-radius:35px;
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #63dfcf,
-        #71bfff
-    );
-
-    box-shadow:
-
-    0 15px 30px rgba(90,200,220,.35);
-
-}
-
-
-
-h1{
-
-    margin-top:25px;
-
-    font-size:38px;
-
-    color:#278fa3;
-
-    letter-spacing:2px;
-
-}
-
-
-
-.subtitle{
-
-    margin-top:12px;
-
-    color:#666;
-
-    line-height:1.6;
-
-}
-
-
-
-.main-card{
-
-    width:100%;
-
-    margin-top:45px;
-
-    padding:28px;
-
-    border-radius:30px;
-
-    background:
-
-    rgba(255,255,255,.75);
-
-    backdrop-filter:blur(15px);
-
-    box-shadow:
-
-    0 15px 30px rgba(0,0,0,.08);
-
-}
-
-
-
-.main-card h2{
-
-    color:#267f91;
-
-    margin-bottom:15px;
-
-}
-
-
-
-.main-card p{
-
-    color:#555;
-
-    line-height:1.6;
-
-}
-
-
-
-.enter{
-
-    margin-top:35px;
-
-    width:180px;
-
-    padding:16px;
-
-    border:none;
-
-    border-radius:30px;
-
-    color:white;
-
-    font-size:18px;
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #5fdcca,
-        #6cbcff
-    );
-
-    cursor:pointer;
-
-    box-shadow:
-
-    0 10px 20px rgba(90,200,220,.35);
-
-}
-/* =========================
-   MENU CARD
-========================= */
-
-
-.menu-page h2{
-
-    font-size:32px;
-
-    color:#278fa3;
-
-    margin-bottom:30px;
-
-}
-
-
-
-.cards{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:18px;
-
-}
-
-
-
-
-.card{
-
-    background:
-
-    rgba(255,255,255,.8);
-
-    backdrop-filter:blur(15px);
-
-    border-radius:25px;
-
-    padding:25px 15px;
-
-    text-align:center;
-
-    box-shadow:
-
-    0 10px 25px rgba(0,0,0,.08);
-
-    cursor:pointer;
-
-    transition:.25s;
-
-}
-
-
-
-.card:hover{
-
-    transform:translateY(-7px);
-
-}
-
-
-
-.card h3{
-
-    margin-top:12px;
-
-    color:#23889d;
-
-}
-
-
-
-.card p{
-
-    margin-top:8px;
-
-    font-size:14px;
-
-    color:#777;
-
-}
-
-
-
-.card.wide{
-
-    grid-column:1/3;
-
-}
-
-
-
-
-/* =========================
-   DETAIL PAGE
-========================= */
-
-
-
-.page h2{
-
-    color:#278fa3;
-
-    font-size:30px;
-
-    margin-bottom:25px;
-
-}
-
-
-
-.back{
-
-    border:none;
-
-    background:white;
-
-    width:45px;
-
-    height:45px;
-
-    border-radius:50%;
-
-    font-size:22px;
-
-    margin-bottom:20px;
-
-    cursor:pointer;
-
-    box-shadow:
-
-    0 5px 15px rgba(0,0,0,.1);
-
-}
-
-
-
-
-.info-card,
-.experiment{
-
-
-    background:
-
-    rgba(255,255,255,.85);
-
-
-    border-radius:25px;
-
-
-    padding:22px;
-
-
-    margin-bottom:18px;
-
-
-    box-shadow:
-
-    0 10px 25px rgba(0,0,0,.08);
-
-
-}
-
-
-
-.info-card h3,
-.experiment h3{
-
-    color:#258ba0;
-
-    margin-bottom:12px;
-
-}
-
-
-
-.info-card p,
-.experiment p{
-
-    color:#555;
-
-    line-height:1.6;
-
-}
-
-
-
-/* =========================
-   JOURNAL
-========================= */
-
-
-
-textarea{
-
-    width:100%;
-
-    height:300px;
-
-    border:none;
-
-    outline:none;
-
-    border-radius:25px;
-
-    padding:20px;
-
-    font-size:16px;
-
-    resize:none;
-
-    background:
-
-    rgba(255,255,255,.8);
-
-    box-shadow:
-
-    0 10px 25px rgba(0,0,0,.08);
-
-}
-
-
-
-.save{
-
-    width:100%;
-
-    margin-top:20px;
-
-    padding:17px;
-
-    border:none;
-
-    border-radius:25px;
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #61ddce,
-        #70bbff
-    );
-
-    color:white;
-
-    font-size:17px;
-
-}
-
-
-
-/* =========================
-   BOTTOM NAV
-========================= */
-
-
-
-nav{
-
-    position:absolute;
-
-    bottom:0;
-
-    left:0;
-
-    width:100%;
-
-    height:80px;
-
-    display:flex;
-
-    justify-content:space-around;
-
-    align-items:center;
-
-
-    background:
-
-    rgba(255,255,255,.85);
-
-
-    backdrop-filter:blur(20px);
-
-
-    border-top:
-
-    1px solid rgba(255,255,255,.5);
-
-}
-
-
-
-
-nav button{
-
-    border:none;
-
-    background:none;
-
-    font-size:25px;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-}
-
-
-
-nav button:hover{
-
-    transform:scale(1.2);
-
-}
-/* =========================
-   SLIDE & ANIMATION
-========================= */
-
-
-/* 페이지 이동 자연스럽게 */
-
-.app{
-
-    transform:translateX(0);
-
-    will-change:transform;
-
-}
-
-
-
-/* 카드 등장 효과 */
-
-.card,
-.info-card,
-.experiment,
-.main-card{
-
-    animation:fadeUp .5s ease;
-
-}
-
-
-
-@keyframes fadeUp{
-
-    from{
-
-        opacity:0;
-
-        transform:translateY(20px);
-
-    }
-
-
-    to{
-
-        opacity:1;
-
-        transform:translateY(0);
-
-    }
-
-}
-
-
-
-/* 버튼 눌림 효과 */
-
-
-button:active{
-
-    transform:scale(.92);
-
-}
-
-
-
-
-/* 스크롤바 숨기기 */
-
-
-.page::-webkit-scrollbar{
-
-    display:none;
-
-}
-
-
-
-/* 아이폰 화면 느낌 */
-
-
-@media(max-width:500px){
-
-
-    .phone{
-
-        width:100vw;
-
-        height:100vh;
-
-        border-radius:0;
-
-    }
-
-
-}
-
-
-
-/* 유리 느낌 강화 */
-
-
-.card:hover,
-.info-card:hover,
-.experiment:hover{
-
-    box-shadow:
-
-    0 15px 35px rgba(60,180,200,.18);
-
-}
-
-
-
-/* 미래 페이지 강조 */
-
-
-.page:last-child .info-card:first-of-type{
-
-    background:
-
-    linear-gradient(
-        135deg,
-        #dffff8,
-        #e6f4ff
-    );
-
-}
-.menu-card{
-    background:rgba(255,255,255,.8);
-    border-radius:25px;
-    padding:25px 15px;
-    text-align:center;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-    cursor:pointer;
-    transition:.25s;
-}
-
-.menu-card:hover{
-    transform:translateY(-7px);
-}
-
-.menu-card span{
-    font-size:35px;
-}
-// ==========================
-// CHEMIPATH SCRIPT
-// ==========================
-
-
-const app = document.querySelector(".app");
-
-const pages = document.querySelectorAll(".page");
-
-let currentPage = 0;
-
-
-
-// 페이지 이동
-
-function openPage(index){
-
-    currentPage = index;
-
-    app.style.transform =
-    `translateX(-${index * 100}%)`;
-
-}
-
-
-
-// 뒤로가기 버튼
-
-const backButtons = document.querySelectorAll(".back");
-
-
-backButtons.forEach(button=>{
-
-    button.addEventListener("click",()=>{
-
-        openPage(1);
-
-    });
-
-});
-
-
-
-
-// 메뉴 카드 이동
-
-const cards = document.querySelectorAll(".menu-card");
-
-
-cards.forEach(card=>{
-
-
-    card.addEventListener("click",()=>{
-
-
-        const target = card.dataset.page;
-
-
-        if(target==="medicine"){
-
-            openPage(2);
-
-        }
-
-
-        if(target==="chemistry"){
-
-            openPage(3);
-
-        }
-
-
-        if(target==="lab"){
-
-            openPage(4);
-
-        }
-
-
-        if(target==="journal"){
-
-            openPage(5);
-
-        }
-
-
-        if(target==="future"){
-
-            openPage(6);
-
-        }
-
-
-    });
-
-
-});
-
-
-
-
-// 하단 탭 이동
-
-
-const tabs = document.querySelectorAll("nav button");
-
-
-tabs.forEach((tab,index)=>{
-
-
-    tab.addEventListener("click",()=>{
-
-
-        if(index===0){
-
-            openPage(0);
-
-        }
-
-
-        else if(index===1){
-
-            openPage(2);
-
-        }
-
-
-        else if(index===2){
-
-            openPage(3);
-
-        }
-
-
-        else if(index===3){
-
-            openPage(4);
-
-        }
-
-
-        else if(index===4){
-
-            openPage(5);
-
-        }
-
-
-        else if(index===5){
-
-            openPage(6);
-
-        }
-
-
-    });
-
-
-});
-
-
-
-
-// Journal 저장 기능
-
-
-const saveButton =
-document.querySelector(".save");
-
-
-const journal =
-document.querySelector("textarea");
-
-
-
-if(saveButton){
-
-
-saveButton.addEventListener("click",()=>{
-
-
-    localStorage.setItem(
-        "chemipath_note",
-        journal.value
-    );
-
-
-    alert("연구 기록이 저장되었습니다 🧪");
-
-
-});
-
-
-}
-
-
-
-
-// 저장된 기록 불러오기
-
-
-window.addEventListener("load",()=>{
-
-
-    const saved =
-    localStorage.getItem(
-        "chemipath_note"
-    );
-
-
-    if(saved){
-
-        journal.value=saved;
-
-    }
-
-
-});
-
-
-
-
-// 시작 애니메이션
-
-
-window.addEventListener("load",()=>{
-
-
-    document.querySelector(".home")
-    .classList.add("show");
-
-
-});

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제약 연구원 포트폴리오 웹앱</title>
+    <title>제약 연구원 & 유기화학 포트폴리오</title>
     <style>
         :root {
             --mint: #a7f3d0;
@@ -11,7 +11,6 @@
             --primary: #0284c7;
             --text-main: #0f172a;
             --text-sub: #334155;
-            /* 글래스모피즘 기본 스타일 */
             --glass-bg: rgba(255, 255, 255, 0.45);
             --glass-border: rgba(255, 255, 255, 0.6);
             --glass-shadow: rgba(15, 23, 42, 0.08);
@@ -26,7 +25,6 @@
         }
 
         body {
-            /* 민트 + 하늘색 그라데이션 배경 */
             background: linear-gradient(135deg, #e0f2fe 0%, #ccfbf1 50%, #bae6fd 100%);
             min-height: 100vh;
             display: flex;
@@ -36,11 +34,11 @@
             overflow: hidden;
         }
 
-        /* 아이폰 프레임 디자인 */
+        /* 아이폰 프레임 */
         .iphone-container {
             width: 100%;
-            max-width: 393px; /* 아이폰 15 표준 가로폭 */
-            height: 852px;    /* 아이폰 15 표준 세로높이 */
+            max-width: 393px;
+            height: 852px;
             background: linear-gradient(160deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -53,7 +51,7 @@
             overflow: hidden;
         }
 
-        /* 아이폰 다이내믹 아일랜드 구현 */
+        /* 다이내믹 아일랜드 */
         .dynamic-island {
             width: 110px;
             height: 30px;
@@ -61,10 +59,9 @@
             border-radius: 20px;
             margin: 12px auto 0 auto;
             z-index: 100;
-            position: relative;
         }
 
-        /* 상단 네비게이션 헤더 */
+        /* 헤더 */
         .app-header {
             padding: 15px 24px;
             display: flex;
@@ -80,7 +77,7 @@
             letter-spacing: -0.5px;
         }
 
-        /* 슬라이드 스크린 윈도우 (가장 중요) */
+        /* 스크린 윈도우 */
         .screen-window {
             flex: 1;
             width: 100%;
@@ -88,26 +85,24 @@
             position: relative;
         }
 
-        /* 6개 스크린을 가로로 길게 배치하는 트랙 */
+        /* 슬라이드 트랙 ↔ */
         .screen-track {
             display: flex;
-            width: 600%; /* 6개 페이지이므로 600% */
+            width: 600%;
             height: 100%;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* 부드러운 슬라이드 ↔ */
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* 개별 스크린 공통 */
         .screen {
-            width: 16.666%; /* 100% / 6 */
+            width: 16.666%;
             height: 100%;
             overflow-y: auto;
-            padding: 10px 24px 100px 24px; /* 하단 탭바 자리 비우기 */
+            padding: 10px 24px 100px 24px;
         }
 
-        /* 스크롤바 숨기기 */
         .screen::-webkit-scrollbar { display: none; }
 
-        /* ✨ 글래스모피즘 카드 UI 기본 형태 */
+        /* ✨ 글래스모피즘 카드 UI */
         .glass-card {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
@@ -135,7 +130,6 @@
             word-break: keep-all;
         }
 
-        /* 강조 텍스트 및 태그 */
         .tag {
             display: inline-block;
             background: rgba(255,255,255,0.6);
@@ -153,7 +147,7 @@
             font-weight: 700;
         }
 
-        /* 📝 성찰일지 전용 UI */
+        /* 📓 일지 폼 스타일 */
         .input-field {
             width: 100%;
             background: rgba(255, 255, 255, 0.5);
@@ -189,7 +183,7 @@
             border-left: 4px solid #10b981;
         }
 
-        /* 📱 하단 탭바 (iOS 스타일) */
+        /* 📱 하단 탭바 */
         .tab-bar {
             position: absolute;
             bottom: 0;
@@ -237,56 +231,55 @@
 <body>
 
     <div class="iphone-container">
-        <!-- 상단 아일랜드 바 -->
         <div class="dynamic-island"></div>
 
-        <!-- 헤더 -->
         <div class="app-header">
             <h1 id="header-title">Home</h1>
-            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub);">Pharm.D</span>
+            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-sub);">Researcher</span>
         </div>
 
-        <!-- 화면 슬라이드 윈도우 -->
         <div class="screen-window">
             <div class="screen-track" id="screen-track">
                 
                 <!-- 1. HOME 스크린 -->
                 <div class="screen">
                     <div class="glass-card" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(16, 185, 129, 0.2));">
-                        <span class="tag">Introduce</span>
+                        <span class="tag">Overview</span>
                         <h2>🏠 Welcome</h2>
-                        <p>미래의 <span class="highlight">제약 연구원</span>이 그리는 화학 기반 의약품 디자인 공간입니다. 하단 탭을 밀어 탐구를 시작해 보세요.</p>
+                        <p>생명 현상을 화학적으로 분석하고 제어하여 인류의 건강을 증진하는 <span class="highlight">제약 연구원의 세계</span>입니다. 하단 메뉴를 이동하며 연구의 흐름을 확인해 보세요.</p>
                     </div>
                     <div class="glass-card">
-                        <h2>📌 포트폴리오 로드맵</h2>
-                        <p>교과서 속 화학 개념이 어떻게 실제 신약 개발 실험과 연계되고, 세특 성찰일지로 연결되는지 한눈에 구조화했습니다.</p>
-                    </div>
-                </div>
-
-                <!-- 2. MEDICINE 스크린 -->
-                <div class="screen">
-                    <div class="glass-card">
-                        <span class="tag">의약품의 역사</span>
-                        <h2>💊 Medicine</h2>
-                        <p>최초의 합성 의약품 <span class="highlight">아스피린(살리실산 아세틸)</span>부터 인류를 구한 항생제 페니실린까지, 의약품은 유기 합성 화학의 결정체입니다.</p>
-                    </div>
-                    <div class="glass-card">
-                        <h2>🎯 세특 타겟 포인트</h2>
-                        <p>단순한 약물 소개를 넘어, 질병의 원인이 되는 표적 단백질 구조에 결합하는 화학 물질의 '분자 구조적 대칭성 및 극성'을 탐구 방향으로 잡습니다.</p>
+                        <h2>📌 학술 탐구 포트폴리오</h2>
+                        <p>이 웹사이트는 신약 개발의 핵심 단계인 물질 발견, 합성, 화학적 평형 상태 분석, 실험실 실습 및 향후 연구 계획을 유기적으로 구조화한 아카이브입니다.</p>
                     </div>
                 </div>
 
-                <!-- 3. CHEMISTRY 스크린 -->
+                <!-- 2. MEDICINE 스크린 (직업 설명 강화) -->
                 <div class="screen">
                     <div class="glass-card">
-                        <span class="tag">교과 내용 연계</span>
-                        <h2>⚗️ Chemistry</h2>
-                        <p>• <b>화학Ⅰ (몰 농도):</b> 제약 공정에서 약물의 정확한 유효 농도 계산<br><br>
-                           • <b>화학Ⅱ (화학 평형):</b> 체내 혈액 완충계와 약물의 이온화 평형 상태 분석, pH 환경에 따른 약물 흡수율 변화 추론</p>
+                        <span class="tag">직업 심층 분석</span>
+                        <h2>💊 신약 개발 프로세스</h2>
+                        <p>제약 연구원은 평균 10~15년이 걸리는 신약 개발의 전 과정을 주도합니다.<br><br>
+                        • <b>기초 연구:</b> 특정 질병을 유발하는 생체 내 표적(단백질 등)을 규명합니다.<br>
+                        • <b>선도물질 최적화:</b> 찾아낸 화학 화합물의 구조를 미세하게 변형하여 효능은 높이고 독성은 최소화하는 유기합성 연구를 수행합니다.</p>
                     </div>
                     <div class="glass-card">
-                        <h2>🧬 확장 개념 탐구</h2>
-                        <p>의약품의 체내 흡수율을 높이기 위한 완충 용액의 원리를 생명과학의 '세포막 물질 수송'과 융합하여 깊이 있는 탐구를 설계합니다.</p>
+                        <h2>🔬 약물 작용 기전 규명</h2>
+                        <p>단순히 '약이 효과가 있다'를 넘어, 화합물이 분자 수준에서 수용체와 어떻게 전자기적·구조적 결합을 이루는지 입체화학적 관점에서 분석하는 정밀한 직무입니다.</p>
+                    </div>
+                </div>
+
+                <!-- 3. CHEMISTRY 스크린 (교과 연계) -->
+                <div class="screen">
+                    <div class="glass-card">
+                        <span class="tag">교과 이론적 배경</span>
+                        <h2>⚗️ 화학 교과 기반 연구</h2>
+                        <p>• <b>화학 (몰 농도와 정량 분석):</b> 신약 후보 물질을 세포에 처리할 때, 마이크로몰($\mu\text{M}$) 단위의 미세 농도를 정확히 계산하는 정밀성이 요구됩니다.<br><br>
+                           • <b>화학 (화학 평형과 완충계):</b> 약물이 인체 내 다양한 환경(위산의 강산성, 혈액의 약알카리성 등)에서 급격한 pH 변화를 겪지 않고 안정을 유지하도록 이온화 평형 상태를 설계합니다.</p>
+                    </div>
+                    <div class="glass-card">
+                        <h2>🧬 학제간 융합 연구</h2>
+                        <p>화학 반응 속도론을 바탕으로 약물이 체내에서 대사되어 소실되는 반감기를 계산하고, 이를 통해 환자가 약을 복용하는 최적의 주기와 용량을 결정합니다.</p>
                     </div>
                 </div>
 
@@ -294,33 +287,32 @@
                 <div class="screen">
                     <div class="glass-card">
                         <span class="tag">실험실 실습</span>
-                        <h2>🔬 Laboratory</h2>
-                        <p>고등학교 과정에서 수행 가능한 유기 합성 실험 코스:<br>
-                        <b>[살리실산 + 아세트산 무수물 $\rightarrow$ 아스피린 합성]</b><br>
-                        에스테르화 반응 메커니즘을 직접 실험하고 수득률을 계산해 봅니다.</p>
+                        <h2>🔬 유기 합성 실험</h2>
+                        <p><b>[살리실산 유도체를 이용한 에스테르화 반응]</b><br>
+                        살리실산과 아세트산 무수물을 인산 촉매 하에 반응시켜 소염진통제 성분을 합성하는 실험을 통해 유기 작용기 변화 과정을 검증합니다.</p>
                     </div>
                     <div class="glass-card">
-                        <h2>⚠️ 오차 분석 팁</h2>
-                        <p>수득률이 100%가 나오지 않은 이유를 '화학 평형의 이동' 및 '재결정 과정에서의 손실' 관점에서 분석하면 훌륭한 보고서가 됩니다.</p>
+                        <h2>⚠️ 정제 및 분석 공정</h2>
+                        <p>합성된 화합물의 불순물을 제거하기 위해 '재결정' 및 '감압 여과' 공정을 수행하며, 화학 평형 이동 원리(르샤틀리에 원리)를 적용해 수득률을 극대화하는 방안을 탐구합니다.</p>
                     </div>
                 </div>
 
                 <!-- 5. JOURNAL 스크린 -->
                 <div class="screen">
                     <div class="glass-card">
-                        <span class="tag">세특 포트폴리오</span>
-                        <h2>📓 Journal</h2>
-                        <p style="margin-bottom: 12px;">오늘 수행한 화학-제약 탐구 활동과 성찰 내용을 기록하여 세특 소스로 누적하세요.</p>
+                        <span class="tag">연구 아카이브</span>
+                        <h2>📓 학술 성찰일지</h2>
+                        <p style="margin-bottom: 12px;">교과 탐구 및 실험을 수행하며 느낀 학술적 호기심과 발전 방향을 체계적으로 기록합니다.</p>
                         
-                        <input type="text" id="topic" class="input-field" placeholder="탐구 주제 (예: 완충용액과 약물흡수)">
-                        <textarea id="content" class="input-field" placeholder="동기, 알게 된 화학적 지식, 제약 연구원으로서의 발전 방향을 적어보세요."></textarea>
-                        <button class="submit-btn" onclick="addJournal()">기록장 저장하기</button>
+                        <input type="text" id="topic" class="input-field" placeholder="탐구 주제 (예: pH 완충계와 약물 전달 시스템)">
+                        <textarea id="content" class="input-field" placeholder="실험 동기, 새롭게 확장하여 알게 된 화학적 메커니즘, 미래 연구원으로서의 성찰 내용을 적어보세요."></textarea>
+                        <button class="submit-btn" onclick="addJournal()">학술 기록장 저장</button>
                     </div>
                     
                     <div class="glass-card" id="journal-view">
-                        <h2>📋 누적된 성찰 기록</h2>
+                        <h2>📋 누적된 연구 기록</h2>
                         <div id="journal-list" style="font-size: 0.85rem; text-align: center; color: var(--text-sub);">
-                            작성된 성찰일지가 없습니다.
+                            아직 작성된 성찰 기록이 없습니다.
                         </div>
                     </div>
                 </div>
@@ -328,21 +320,17 @@
                 <!-- 6. FUTURE 스크린 -->
                 <div class="screen">
                     <div class="glass-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(2, 132, 199, 0.15));">
-                        <span class="tag">나의 비전</span>
-                        <h2>👩‍🔬 Future</h2>
-                        <p>단순한 화학 지식 암기를 넘어, 인류의 난치병을 치료할 물질을 분자 수준에서 조립하는 <span class="highlight">융합형 제약공학 연구원</span>으로 성장하겠습니다.</p>
-                    </div>
-                    <div class="glass-card">
-                        <h2>🚀 향후 독서 및 탐구 계획</h2>
-                        <p>• 관련 도서: 《합성 의약품의 역사》, 《바이오테크 시대를 살다》<br>
-                           • 후속 탐구: AI 기반 신약 후보 물질 스크리닝 원리 조사</p>
+                        <span class="tag">Future Vision</span>
+                        <h2>👩‍🔬 향후 독서 및 연구 계획</h2>
+                        <p>• <b>전문 독서 탐구:</b> 《의약품의 역사》, 《바이오테크 시대를 살다》 등의 도서를 통해 유기합성 신약과 바이오 의약품의 패러다임 변화를 심층 이해하고자 합니다.<br><br>
+                           • <b>차세대 연구 설계:</b> 인공지능(AI)을 활용한 화합물 가상 스크리닝 원리를 조사하고, 분자 시뮬레이션을 활용한 신약 후보 물질 발굴 방안을 모색할 계획입니다.</p>
                     </div>
                 </div>
 
             </div>
         </div>
 
-        <!-- 하단 iOS 스타일 탭 바 -->
+        <!-- 하단 내비게이션 바 -->
         <div class="tab-bar">
             <button class="tab-btn active" onclick="goScreen(0, 'Home', this)">
                 <span class="tab-icon">🏠</span><span class="tab-label">Home</span>
@@ -366,33 +354,27 @@
     </div>
 
     <script>
-        // 좌우 슬라이드 기능 구현 
         function goScreen(index, title, btn) {
-            // 트랙 이동 (0% , -16.666%, -33.333% ... 형태로 가로 이동)
             const movePercentage = index * -16.6666;
             document.getElementById('screen-track').style.transform = `translateX(${movePercentage}%)`;
-            
-            // 헤더 텍스트 변경
             document.getElementById('header-title').innerText = title;
 
-            // 하단 탭 액티브 스타일 적용
             const btns = document.querySelectorAll('.tab-btn');
             btns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
 
-        // 일지 추가 기능
         function addJournal() {
             const topic = document.getElementById('topic').value;
             const content = document.getElementById('content').value;
 
             if(!topic || !content) {
-                alert('주제와 성찰 내용을 모두 입력해 주세요! ✨');
+                alert('주제와 내용을 입력해 주세요! ✨');
                 return;
             }
 
             const listZone = document.getElementById('journal-list');
-            if(listZone.innerText.includes('작성된 성찰일지가 없습니다.')) {
+            if(listZone.innerText.includes('아직 작성된 성찰 기록이 없습니다.')) {
                 listZone.innerHTML = '';
             }
 
@@ -405,10 +387,9 @@
 
             listZone.insertBefore(item, listZone.firstChild);
 
-            // 입력창 초기화
             document.getElementById('topic').value = '';
             document.getElementById('content').value = '';
-            alert('성찰 기록이 성공적으로 저장되었습니다! 📝');
+            alert('기록장에 성공적으로 저장되었습니다! 📝');
         }
     </script>
 </body>
